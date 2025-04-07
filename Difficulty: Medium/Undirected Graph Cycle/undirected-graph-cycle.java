@@ -27,14 +27,6 @@ class GFG {
 
 // } Driver Code Ends
 
-class Pair{
-    int node;
-    int parentNode;
-    Pair(int node,int parentNode){
-        this.node=node;
-        this.parentNode=parentNode;
-    }
-}
 
 class Solution {
     public boolean isCycle(int V, int[][] edges) {
@@ -44,7 +36,7 @@ class Solution {
         for(int i=0;i<V;i++){
             adj.add(new ArrayList<>());
         }
-        
+    
         for(int []edge:edges){
             int u=edge[0];
             int v=edge[1];
@@ -55,29 +47,24 @@ class Solution {
         Arrays.fill(visitedArray,0);
         for(int i=0;i<V;i++){
             if(visitedArray[i]==0){
-                if(bfs(i,adj,visitedArray)){
+                if(dfs(i,-1,adj,visitedArray)){
                     return true;
                 }
             }
         }
         return false;
     }
-    static boolean bfs(int startingNode,ArrayList<ArrayList<Integer>> adj,int visitedArray[]){
-        Queue<Pair> queue=new LinkedList<>();
-        queue.add(new Pair(startingNode,-1));
+    
+    static boolean dfs(int startingNode,int parentNode,ArrayList<ArrayList<Integer>> adj,int visitedArray[]){
         visitedArray[startingNode]=1;
-        
-        while(!queue.isEmpty()){
-            Pair current=queue.poll();
-            int node=current.node;
-            int parentNode=current.parentNode;
-            for(int adjNode:adj.get(node)){
-                if(visitedArray[adjNode]==0){
-                    queue.add(new Pair(adjNode,node));
-                    visitedArray[adjNode]=1;
-                }else if(parentNode!=adjNode){
+        for(int adjNode:adj.get(startingNode)){
+            if(visitedArray[adjNode]==0){
+                visitedArray[adjNode]=1;
+                if(dfs(adjNode,startingNode,adj,visitedArray)){
                     return true;
                 }
+            }else if(adjNode!=parentNode){
+                return true;
             }
         }
         return false;
